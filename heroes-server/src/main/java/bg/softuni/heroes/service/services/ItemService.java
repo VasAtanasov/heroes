@@ -1,24 +1,24 @@
 package bg.softuni.heroes.service.services;
 
-import bg.softuni.heroes.web.models.request.ItemCreateRequest;
-import bg.softuni.heroes.web.models.request.ItemEditRequest;
-import bg.softuni.heroes.web.models.response.item.ItemDetailsResponseModel;
-import bg.softuni.heroes.web.models.response.item.ItemResponseModel;
+import bg.softuni.heroes.service.models.items.ItemCreateServiceModel;
+import bg.softuni.heroes.service.models.items.ItemDetailedServiceModel;
+import bg.softuni.heroes.service.models.items.ItemEditServiceModel;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import java.util.UUID;
 
 public interface ItemService {
-    ItemResponseModel getAllItems(Pageable pageable);
+    Page<ItemDetailedServiceModel> getItemsPage(Pageable pageable);
 
-    ResponseEntity<?> create(ItemCreateRequest request);
+    ItemDetailedServiceModel create(ItemCreateServiceModel request);
 
-    ItemDetailsResponseModel findById(UUID id);
+    ItemDetailedServiceModel findById(UUID id);
 
-    ItemDetailsResponseModel findByName(String name);
+    ItemDetailedServiceModel findByName(String name);
 
-    ResponseEntity<?> edit(ItemEditRequest request);
+    ItemDetailedServiceModel edit(ItemEditServiceModel request);
 
-    ResponseEntity<?> delete(UUID id);
+    void delete(UUID id);
 }

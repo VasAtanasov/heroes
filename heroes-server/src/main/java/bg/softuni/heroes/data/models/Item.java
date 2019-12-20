@@ -2,17 +2,15 @@ package bg.softuni.heroes.data.models;
 
 import bg.softuni.heroes.data.enums.Slot;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(
         name = "items",
@@ -43,16 +41,4 @@ public class Item extends BaseUuidEntity {
 
     @ManyToMany(mappedBy = "items")
     private List<Hero> heroes;
-
-    @Builder
-    public Item(UUID id, String name, Slot slot, int stamina, int strength, int attack, int defence) {
-        super(id);
-        this.name = name;
-        this.slot = slot;
-        this.stamina = stamina;
-        this.strength = strength;
-        this.attack = attack;
-        this.defence = defence;
-        this.heroes = new ArrayList<>();
-    }
 }

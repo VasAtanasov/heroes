@@ -6,6 +6,8 @@ import bg.softuni.heroes.data.repositories.ItemRepository;
 import bg.softuni.heroes.DataSetUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -58,8 +60,10 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$.items", hasSize(5)));
     }
 
+
     @Test
-    public void when_create_withValidData_returnsValidMessage() throws Exception {
+    @DisplayName("return successful creation message")
+    void create_whenWithValidData_returnsValidMessage() throws Exception {
         mockMvc.perform(post("/api/items")
                 .param("name", "Item")
                 .param("slot", Slot.WEAPON.name())
@@ -72,7 +76,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void when_create_withInvalidSlot_shouldReturnsErrorMessage() throws Exception {
+    void when_create_withInvalidSlot_shouldReturnsErrorMessage() throws Exception {
         mockMvc.perform(post("/api/items")
                 .param("name", "mhearne0")
                 .param("slot", "Invalid slot")
@@ -85,7 +89,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void when_create_withExistingName_shouldReturnsNameExistsMessage() throws Exception {
+    void create_whenWithExistingName_shouldReturnsNameExistsMessage() throws Exception {
         mockMvc.perform(post("/api/items")
                 .param("name", "mhearne0")
                 .param("slot", Slot.WEAPON.name())
@@ -97,8 +101,9 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$.message", is(String.format(ITEM_EXISTS, "mhearne0"))));
     }
 
+
     @Test
-    public void when_findByName_withExistingName_shouldReturnsValidObject() throws Exception {
+    public void findByName_whenWithExistingName_shouldReturnsValidObject() throws Exception {
         final String NAME = "bkitchenman4";
         final String SLOT = "HELMET";
         final int ATTACK = 73;
@@ -117,7 +122,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void when_findByName_withNonExistingName_shouldReturnsErrorMessage() throws Exception {
+    public void findByName_whenWithNonExistingName_shouldReturnsErrorMessage() throws Exception {
         final String NAME = "Non existing name";
 
         mockMvc.perform(get("/api/items/" + NAME))
@@ -127,7 +132,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void when_edit_withValidEntity_shouldReturnsValidMessage() throws Exception {
+    public void edit_whenWithValidEntity_shouldReturnsValidMessage() throws Exception {
         final String NAME = "bkitchenman4";
 
         Item item = itemRepository.findByName(NAME).orElse(Item.builder().build());
@@ -145,6 +150,20 @@ public class ItemControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)))
                 .andExpect(jsonPath("$.message", is(SUCCESSFUL_ITEM_EDITED)));
+    }
+
+    @Test
+    public void delete_whenWithValidUUID_shouldReturnsValidMessage() throws Exception {
+        final String NAME = "bkitchenman4";
+
+        Item item = itemRepository.findByName(NAME).orElse(Item.builder().build());
+
+        item.setAttack(200);
+
+        mockMvc.perform(delete("/api/items/" + item.getId().toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.message", is(SUCCESSFUL_ITEM_DELETED)));
     }
 
 

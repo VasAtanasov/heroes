@@ -1,21 +1,17 @@
 package bg.softuni.heroes.service.services.impl;
 
-import bg.softuni.heroes.DataSetUtils;
 import bg.softuni.heroes.ModelMapperFactory;
 import bg.softuni.heroes.base.UnitTestBase;
-import bg.softuni.heroes.data.models.Item;
 import bg.softuni.heroes.data.repositories.ItemRepository;
 import bg.softuni.heroes.service.services.ItemService;
 import bg.softuni.heroes.web.exception.ResourceNotFoundException;
-import bg.softuni.heroes.web.models.response.item.ItemDetailsResponseModel;
-import bg.softuni.heroes.web.models.response.item.ItemResponseModel;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.Optional;
 
+import static bg.softuni.heroes.constants.ResponseMessages.ITEM_NAME_NOT_EXISTS;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -36,41 +32,46 @@ class ItemServiceImplTest extends UnitTestBase {
         itemService = new ItemServiceImpl(itemRepository, ModelMapperFactory.getModelMapper());
     }
 
+//    @Test
+//    @DisplayName("Retrieve page of items.")
+//    void getAllItems_whenWithItems_shouldReturnCollection() {
+//        Page<Item> page = DataSetUtils.getItemsPage();
+//        PageRequest pageRequest = PageRequest.of(1, page.getNumberOfElements());
+//
+//        when(itemRepository.findAll(pageRequest))
+//                .thenReturn(page);
+//
+//        ItemResponseModel itemResponseModel = itemService.getAllItems(pageRequest);
+//
+//        assertThat(itemResponseModel.getTotal(), equalTo(page.getTotalElements()));
+//    }
+
     @Test
-    void getAllItems_whenWithItems_shouldReturnCollection() {
-        Page<Item> page = DataSetUtils.getItemsPage();
-        PageRequest pageRequest = PageRequest.of(1, page.getNumberOfElements());
-
-        when(itemRepository.findAll(pageRequest))
-                .thenReturn(page);
-
-        ItemResponseModel itemResponseModel = itemService.getAllItems(pageRequest);
-
-        assertThat(itemResponseModel.getTotal(), equalTo(page.getTotalElements()));
-    }
-
-    @Test
+    @DisplayName("Throws exception when item name does not exist in database.")
     void findByName_whenNonExistingName_shouldThrow() {
         when(itemRepository.findByName(NON_EXISTING_NAME))
                 .thenReturn(Optional.empty());
 
-        assertThrows(
+        Throwable error = assertThrows(
                 ResourceNotFoundException.class,
                 () -> itemService.findByName(NON_EXISTING_NAME)
         );
+
+        assertThat(error.getMessage(), equalTo(ITEM_NAME_NOT_EXISTS));
     }
 
-    @Test
-    void findByName_whenExistingName_shouldReturnModel() {
-        Item item = Item.builder()
-                .name(NAME)
-                .build();
-
-        when(itemRepository.findByName(NAME))
-                .thenReturn(Optional.of(item));
-
-        ItemDetailsResponseModel model = itemService.findByName(NAME);
-
-        assertThat(model.getName(), equalTo(NAME));
-    }
+//    @Test
+//    @DisplayName("Getting existing item by name.")
+//    void findByName_whenExistingName_shouldReturnModel() {
+//        Item item = Item.builder()
+//                .name(NAME)
+//                .build();
+//
+//        when(itemRepository.findByName(NAME))
+//                .thenReturn(Optional.of(item));
+//
+//        ItemDetailsResponseModel model = itemService.findByName(NAME);
+//
+//        assertThat(model.getName(), equalTo(NAME));
+//    }
 }

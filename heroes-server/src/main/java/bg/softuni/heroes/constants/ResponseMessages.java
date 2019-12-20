@@ -6,8 +6,8 @@ import lombok.experimental.UtilityClass;
 public final class ResponseMessages {
 
     public static final String INVALID_SLOT = "Invalid Slot!";
-    public static final String ITEM_EXISTS = "Item with name - \"%s\" already exist!";
-    public static final String ITEM_NAME_NOT_EXISTS = "Item with name does not exist!";
+    public static final String ITEM_EXISTS = "Item with name - %s already exist!";
+    public static final String ITEM_NAME_NOT_EXISTS = "Item with provided name does not exist!";
     public static final String ITEM_ID_NOT_EXISTS = "Item with given id does not exist!";
 
     public static final String SUCCESSFUL_ITEM_CREATED = "Successfully created item";

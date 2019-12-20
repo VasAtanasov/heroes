@@ -1,16 +1,15 @@
-package bg.softuni.heroes.web.models.response.item;
+package bg.softuni.heroes.service.models.items;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @NoArgsConstructor
-public class ItemListModel {
-    private UUID id;
+@AllArgsConstructor
+public class ItemCreateServiceModel {
     private String name;
     private String slot;
     private int stamina;

@@ -1,21 +1,27 @@
 package bg.softuni.heroes.web.controllers;
 
+import bg.softuni.heroes.service.models.items.ItemCreateServiceModel;
+import bg.softuni.heroes.service.models.items.ItemEditServiceModel;
 import bg.softuni.heroes.service.services.ItemService;
+import bg.softuni.heroes.util.ModelMapperWrapper;
 import bg.softuni.heroes.web.models.request.ItemCreateRequest;
 import bg.softuni.heroes.web.models.request.ItemEditRequest;
 import bg.softuni.heroes.web.models.response.item.ItemDetailsResponseModel;
-import bg.softuni.heroes.web.models.response.item.ItemResponseModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
+import java.util.HashMap;
 import java.util.UUID;
 
+import static bg.softuni.heroes.config.WebConfig.URL_API_BASE;
 import static bg.softuni.heroes.config.WebConfig.URL_ITEMS_BASE;
 
 @RestController
@@ -24,31 +30,61 @@ import static bg.softuni.heroes.config.WebConfig.URL_ITEMS_BASE;
 public class ItemController {
 
     private final ItemService itemService;
+    private final ModelMapperWrapper modelMapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ItemResponseModel all(Pageable pageable) {
-        return itemService.getAllItems(pageable);
+    public ResponseEntity<?> all(Pageable pageable) {
+
+        Page<ItemDetailsResponseModel> itemsPage = itemService.getItemsPage(pageable)
+                .map(model -> modelMapper.map(model, ItemDetailsResponseModel.class));
+
+        return ResponseEntity.ok(itemsPage);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> create(@Valid @ModelAttribute ItemCreateRequest request) {
-        return itemService.create(request);
+
+        ItemCreateServiceModel createModel = modelMapper.map(request, ItemCreateServiceModel.class);
+
+        ItemDetailsResponseModel createdItem = modelMapper
+                .map(itemService.create(createModel), ItemDetailsResponseModel.class);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath().path(URL_API_BASE + URL_ITEMS_BASE)
+                .buildAndExpand().toUri();
+
+        return ResponseEntity.created(location).body(createdItem);
     }
 
     @GetMapping(path = "/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ItemDetailsResponseModel findByName(@PathVariable String name) {
-        return itemService.findByName(name);
+    public ResponseEntity<?> findByName(@PathVariable String name) {
+
+        ItemDetailsResponseModel item = modelMapper
+                .map(itemService.findByName(name), ItemDetailsResponseModel.class);
+
+        return ResponseEntity.ok(item);
     }
 
     @PatchMapping
     public ResponseEntity<?> edit(@Valid @ModelAttribute ItemEditRequest request) {
-        return itemService.edit(request);
+
+        ItemEditServiceModel editModel = modelMapper
+                .map(request, ItemEditServiceModel.class);
+
+        ItemDetailsResponseModel createdItem = modelMapper
+                .map(itemService.edit(editModel), ItemDetailsResponseModel.class);
+
+        return ResponseEntity.ok(createdItem);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable UUID id) {
-        return itemService.delete(id);
+
+        itemService.delete(id);
+
+        return ResponseEntity.ok(new HashMap<>() {{
+            put("message", "Item deleted successfully.");
+        }});
     }
 
 }
