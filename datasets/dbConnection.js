@@ -3,7 +3,7 @@ const mysql = require('promise-mysql');
 const dbConfig = {
     user: "root",
     password: "1234",
-    database: "autohouse_db",
+    database: "heroes_db",
     host: "localhost",
     connectionLimit: 10,
     multipleStatements: true
