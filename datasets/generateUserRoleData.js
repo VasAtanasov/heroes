@@ -1,5 +1,4 @@
 async function generateUserRoleSqlInsert() {
-    const utils = require('./utils');
     const usersUUIDs = await require('./json/uuid_for_users');
     const usersArray = await require('./json/users_data');
     const rolesArray = await require('./json/role_data');
@@ -28,7 +27,7 @@ async function generateUserRoleSqlInsert() {
         userRole.push(userObj);
     }
 
-    const generator = new InsertGenerator("users_roles", userRole);
+    const generator = new InsertGenerator("users_roles", userRole, true, ["user_id"]);
     return generator.generateDataSql();
 }
 
