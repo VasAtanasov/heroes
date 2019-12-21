@@ -12,7 +12,5 @@ public final class ResponseMessages {
 
     public static final String SUCCESSFUL_ITEM_CREATED = "Successfully created item";
     public static final String SUCCESSFUL_ITEM_EDITED = "Successfully updated item";
-    public static final String SUCCESSFUL_ITEM_DELETED = "Successfully deleted item";
-
-
+    public static final String ITEM_DELETED = "Item deleted successfully.";
 }

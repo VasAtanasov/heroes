@@ -11,6 +11,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    public static final int DEFAULT_PAGE_NUMBER = 0;
+    public static final int DEFAULT_PAGE_SIZE = 10;
+
     public static final String URL_INDEX = "/";
     public static final String URL_ERROR_UNAUTHORIZED = "/unauthorized";
 

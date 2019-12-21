@@ -1,11 +1,10 @@
 package bg.softuni.heroes.service.services;
 
-import bg.softuni.heroes.service.models.items.ItemCreateServiceModel;
-import bg.softuni.heroes.service.models.items.ItemDetailedServiceModel;
-import bg.softuni.heroes.service.models.items.ItemEditServiceModel;
+import bg.softuni.heroes.service.models.item.ItemCreateServiceModel;
+import bg.softuni.heroes.service.models.item.ItemDetailedServiceModel;
+import bg.softuni.heroes.service.models.item.ItemEditServiceModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 
 import java.util.UUID;
 

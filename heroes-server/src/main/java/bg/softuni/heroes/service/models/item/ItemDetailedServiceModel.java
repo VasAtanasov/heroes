@@ -1,4 +1,4 @@
-package bg.softuni.heroes.service.models.items;
+package bg.softuni.heroes.service.models.item;
 
 import bg.softuni.heroes.data.enums.Slot;
 import lombok.*;

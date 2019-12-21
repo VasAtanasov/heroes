@@ -2,6 +2,8 @@ package bg.softuni.heroes.service.services.impl;
 
 import bg.softuni.heroes.data.repositories.HeroRepository;
 import bg.softuni.heroes.data.repositories.ItemRepository;
+import bg.softuni.heroes.service.models.hero.HeroCreateServiceClass;
+import bg.softuni.heroes.service.models.hero.HeroDetailsServiceModel;
 import bg.softuni.heroes.service.services.HeroService;
 import bg.softuni.heroes.util.ModelMapperWrapper;
 import lombok.RequiredArgsConstructor;
@@ -18,4 +20,8 @@ public class HeroServiceImpl implements HeroService {
     private final ItemRepository itemRepository;
     private final ModelMapperWrapper modelMapper;
 
+    @Override
+    public HeroDetailsServiceModel create(HeroCreateServiceClass heroCreateServiceClass) {
+        return null;
+    }
 }

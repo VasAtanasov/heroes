@@ -1,16 +1,15 @@
-package bg.softuni.heroes.service.models.items;
+package bg.softuni.heroes.service.models.item;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @NoArgsConstructor
-public class ItemEditServiceModel {
-    private UUID id;
+@AllArgsConstructor
+public class ItemCreateServiceModel {
     private String name;
     private String slot;
     private int stamina;

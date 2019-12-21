@@ -7,7 +7,6 @@ import bg.softuni.heroes.DataSetUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static bg.softuni.heroes.constants.ResponseMessages.*;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -54,12 +54,11 @@ public class ItemControllerTest {
 
     @Test
     public void all() throws Exception {
-        mockMvc.perform(get("/api/items?page=0&size=5&sort=name"))
+        mockMvc.perform(get("/api/items"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.total", is(14)))
-                .andExpect(jsonPath("$.items", hasSize(5)));
+                .andExpect(jsonPath("$.totalElements", is(14)))
+                .andExpect(jsonPath("$.content", hasSize(5)));
     }
-
 
     @Test
     @DisplayName("return successful creation message")
@@ -71,8 +70,8 @@ public class ItemControllerTest {
                 .param("strength", "100")
                 .param("attack", "100"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.success", is(true)))
-                .andExpect(jsonPath("$.message", is(SUCCESSFUL_ITEM_CREATED)));
+                .andExpect(jsonPath("$.name", equalTo("Item")))
+                .andExpect(jsonPath("$.slot", equalTo(Slot.WEAPON.name())));
     }
 
     @Test
@@ -96,9 +95,7 @@ public class ItemControllerTest {
                 .param("stamina", "100")
                 .param("strength", "100")
                 .param("attack", "100"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.success", is(false)))
-                .andExpect(jsonPath("$.message", is(String.format(ITEM_EXISTS, "mhearne0"))));
+                .andExpect(status().isConflict());
     }
 
 
@@ -111,7 +108,7 @@ public class ItemControllerTest {
         final int STRENGTH = 48;
         final int DEFENCE = 2;
 
-        mockMvc.perform(get("/api/items/" + NAME))
+        mockMvc.perform(get("/api/items?name=" + NAME))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(NAME)))
                 .andExpect(jsonPath("$.slot", is(SLOT)))
@@ -125,7 +122,7 @@ public class ItemControllerTest {
     public void findByName_whenWithNonExistingName_shouldReturnsErrorMessage() throws Exception {
         final String NAME = "Non existing name";
 
-        mockMvc.perform(get("/api/items/" + NAME))
+        mockMvc.perform(get("/api/items?name=" + NAME))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.statusCode", is(404)))
                 .andExpect(jsonPath("$.message", is(ITEM_NAME_NOT_EXISTS)));
@@ -147,9 +144,7 @@ public class ItemControllerTest {
                 .param("strength", Integer.toString(item.getStrength()))
                 .param("attack", Integer.toString(item.getAttack()))
                 .param("defence", Integer.toString(item.getDefence())))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success", is(true)))
-                .andExpect(jsonPath("$.message", is(SUCCESSFUL_ITEM_EDITED)));
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -162,8 +157,7 @@ public class ItemControllerTest {
 
         mockMvc.perform(delete("/api/items/" + item.getId().toString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success", is(true)))
-                .andExpect(jsonPath("$.message", is(SUCCESSFUL_ITEM_DELETED)));
+                .andExpect(jsonPath("$.message", is(ITEM_DELETED)));
     }
 
 

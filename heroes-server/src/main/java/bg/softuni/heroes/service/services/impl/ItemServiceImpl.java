@@ -3,24 +3,19 @@ package bg.softuni.heroes.service.services.impl;
 import bg.softuni.heroes.data.enums.Slot;
 import bg.softuni.heroes.data.models.Item;
 import bg.softuni.heroes.data.repositories.ItemRepository;
-import bg.softuni.heroes.service.models.items.ItemCreateServiceModel;
-import bg.softuni.heroes.service.models.items.ItemDetailedServiceModel;
-import bg.softuni.heroes.service.models.items.ItemEditServiceModel;
+import bg.softuni.heroes.service.models.item.ItemCreateServiceModel;
+import bg.softuni.heroes.service.models.item.ItemDetailedServiceModel;
+import bg.softuni.heroes.service.models.item.ItemEditServiceModel;
 import bg.softuni.heroes.service.services.ItemService;
 import bg.softuni.heroes.util.EnumUtils;
 import bg.softuni.heroes.util.ModelMapperWrapper;
 import bg.softuni.heroes.web.exception.ResourceDuplicateException;
 import bg.softuni.heroes.web.exception.ResourceNotFoundException;
-import bg.softuni.heroes.web.models.factories.ApiResponseFactory;
-import bg.softuni.heroes.web.models.request.ItemCreateRequest;
-import bg.softuni.heroes.web.models.request.ItemEditRequest;
-import bg.softuni.heroes.web.models.response.item.ItemDetailsResponseModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,12 +33,15 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Page<ItemDetailedServiceModel> getItemsPage(Pageable pageable) {
+
         Page<Item> items = itemRepository.findAll(pageable);
+
         return items.map(item -> modelMapper.map(item, ItemDetailedServiceModel.class));
     }
 
     @Override
     public ItemDetailedServiceModel create(ItemCreateServiceModel createModel) {
+
         EnumUtils.fromString(createModel.getSlot(), Slot.class)
                 .orElseThrow(() -> new ResourceNotFoundException(INVALID_SLOT));
 
@@ -59,15 +57,19 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDetailedServiceModel findById(UUID id) {
+
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ITEM_ID_NOT_EXISTS));
+
         return modelMapper.map(item, ItemDetailedServiceModel.class);
     }
 
     @Override
     public ItemDetailedServiceModel findByName(String name) {
+
         Item item = itemRepository.findByName(name)
                 .orElseThrow(() -> new ResourceNotFoundException(ITEM_NAME_NOT_EXISTS));
+
         return modelMapper.map(item, ItemDetailedServiceModel.class);
     }
 
@@ -84,17 +86,14 @@ public class ItemServiceImpl implements ItemService {
         itemRepository.saveAndFlush(item);
 
         return modelMapper.map(item, ItemDetailedServiceModel.class);
-
     }
 
     @Override
     public void delete(UUID id) {
+
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ITEM_ID_NOT_EXISTS));
 
         itemRepository.delete(item);
-
     }
-
-
 }
