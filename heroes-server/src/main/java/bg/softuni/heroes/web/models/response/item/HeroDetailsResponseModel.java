@@ -1,7 +1,6 @@
-package bg.softuni.heroes.service.models.hero;
+package bg.softuni.heroes.web.models.response.item;
 
 import bg.softuni.heroes.data.enums.Gender;
-import bg.softuni.heroes.service.models.item.ItemDetailedServiceModel;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -10,10 +9,10 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class HeroDetailsServiceModel {
+public class HeroDetailsResponseModel {
     private UUID id;
     private String name;
     private Gender gender;
@@ -23,5 +22,5 @@ public class HeroDetailsServiceModel {
     private int attack;
     private int defence;
     @Builder.Default
-    private List<ItemDetailedServiceModel> items = new ArrayList<>();
+    private List<ItemDetailsResponseModel> items = new ArrayList<>();
 }

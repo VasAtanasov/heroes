@@ -13,4 +13,7 @@ public final class ResponseMessages {
     public static final String SUCCESSFUL_ITEM_CREATED = "Successfully created item";
     public static final String SUCCESSFUL_ITEM_EDITED = "Successfully updated item";
     public static final String ITEM_DELETED = "Item deleted successfully.";
+
+    public static final String HERO_NAME_NOT_EXISTS = "Hero with provided name does not exist!";
+    public static final String HERO_ID_NOT_EXISTS = "Hero with given id does not exist!";
 }

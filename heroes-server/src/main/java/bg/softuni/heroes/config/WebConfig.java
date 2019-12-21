@@ -30,6 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
     public static final String URL_API_BASE = "/api";
 
     public static final String URL_ITEMS_BASE = "/items";
+    public static final String URL_HERO_BASE = "/heroes";
 
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {

@@ -14,8 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,8 +42,8 @@ public class ItemController {
                                          @SortDefault(sort = "attack", direction = Sort.Direction.DESC)
                                  }) Pageable pageable) {
 
-        Page<EntityModel<ItemDetailsResponseModel>> itemsPage = itemService.getItemsPage(pageable)
-                .map(model -> getModel(modelMapper.map(model, ItemDetailsResponseModel.class)));
+        Page<ItemDetailsResponseModel> itemsPage = itemService.getItemsPage(pageable)
+                .map(model -> modelMapper.map(model, ItemDetailsResponseModel.class));
 
         return ResponseEntity.ok(itemsPage);
     }
@@ -58,7 +56,9 @@ public class ItemController {
         final ItemDetailsResponseModel createdItem = modelMapper
                 .map(itemService.create(createModel), ItemDetailsResponseModel.class);
 
-        final URI location = getLocation();
+        final URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath().path(URL_API_BASE + URL_ITEMS_BASE)
+                .buildAndExpand().toUri();
 
         return ResponseEntity.created(location).body(createdItem);
     }
@@ -69,9 +69,7 @@ public class ItemController {
         ItemDetailsResponseModel item = modelMapper
                 .map(itemService.findById(id), ItemDetailsResponseModel.class);
 
-        EntityModel<ItemDetailsResponseModel> model = getModel(item);
-
-        return ResponseEntity.ok(model);
+        return ResponseEntity.ok(item);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = "name")
@@ -80,9 +78,7 @@ public class ItemController {
         ItemDetailsResponseModel item = modelMapper
                 .map(itemService.findByName(name), ItemDetailsResponseModel.class);
 
-        EntityModel<ItemDetailsResponseModel> model = getModel(item);
-
-        return ResponseEntity.ok(model);
+        return ResponseEntity.ok(item);
     }
 
     @PatchMapping
@@ -105,22 +101,5 @@ public class ItemController {
         return ResponseEntity.ok(new HashMap<>() {{
             put("message", ITEM_DELETED);
         }});
-    }
-
-    private EntityModel<ItemDetailsResponseModel> getModel(ItemDetailsResponseModel item) {
-        final URI location = getLocation();
-        Link link = new Link(location.toASCIIString(), "items");
-        Link linkSelfName = new Link(String.format("%s?name=%s", location.toASCIIString(), item.getName()), "self");
-        Link linkSelfId = new Link(String.format("%s?id=%s", location.toASCIIString(), item.getId()), "self");
-        Link linkSelfCreate = new Link(location.toASCIIString(), "create");
-        Link linkSelfEdit = new Link(location.toASCIIString(), "edit");
-        Link linkSelfDelete = new Link(String.format("%s/%s", location.toASCIIString(), item.getId()), "delete");
-        return new EntityModel<>(item, link, linkSelfName, linkSelfId, linkSelfCreate, linkSelfEdit, linkSelfDelete);
-    }
-
-    private URI getLocation() {
-        return ServletUriComponentsBuilder
-                .fromCurrentContextPath().path(URL_API_BASE + URL_ITEMS_BASE)
-                .buildAndExpand().toUri();
     }
 }
